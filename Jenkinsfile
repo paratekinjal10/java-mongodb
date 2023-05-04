@@ -120,7 +120,7 @@ pipeline {
                     sshCommand remote: remote, command: "sudo docker pull 4.188.224.23:8083/app:${VERSION}", tty: true
                     sshCommand remote: remote, command: 'sudo docker pull mongo:latest', tty: true
                     sshCommand remote: remote, command: 'sudo docker run -d --name db -p 27017:27017 mongo:latest', tty: true
-                    sshCommand remote: remote, command: 'sudo docker run -d --name app -p 8085:8085 --link db:mongo 4.188.224.23:8083/app:${VERSION}', tty: true
+                    sshCommand remote: remote, command: 'sudo docker run -d --name app -p 8080:8080 --link db:mongo 4.188.224.23:8083/app:${VERSION}', tty: true
                     }
                 }
 
