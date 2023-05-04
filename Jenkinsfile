@@ -97,24 +97,6 @@ pipeline {
 
         }
 
-        stage("Pull image"){
-            steps{
-    
-                script{
-                    
-                    withCredentials([string(credentialsId: 'nexus', variable: 'nexus-cred')]) {
-                    
-                    sh '''
-                    docker pull 4.188.224.23:8083/app:${VERSION}  
-                    '''
-                    }
-                    def image = docker.image('mongo:latest')
-                    image.pull()
-                                        
-                }
-
-            }
-        }
 
          stage("Run image on remote server"){
             steps{
@@ -132,8 +114,8 @@ pipeline {
                     remote.name = 'deploy'
                     remote.password = 'deploy@12345678'
                     remote.allowAnyHosts = 'true'
-                    sshCommand remote: remote, command: 'docker container rm -f db', tty: true
-                    sshCommand remote: remote, command: 'docker container rm -f app', tty: true
+                    //sshCommand remote: remote, command: 'docker container rm -f db', tty: true
+                    //sshCommand remote: remote, command: 'docker container rm -f app', tty: true
                     sshCommand remote: remote, command: 'sudo docker login -u admin -p nexus 4.188.224.23:8083', tty: true
                     sshCommand remote: remote, command: 'sudo docker pull 4.188.224.23:8083/app:${VERSION}', tty: true
                     sshCommand remote: remote, command: 'sudo docker pull mongo:latest', tty: true
