@@ -21,7 +21,7 @@ pipeline {
     }
 
     stages {
-    
+        
 
         stage ('Build') {
 
@@ -38,7 +38,7 @@ pipeline {
 
               script{
 
-                    withSonarQubeEnv(installationName: 'sonar-server2' , credentialsId: 'jenkins2') {
+                    withSonarQubeEnv(installationName: 'sonar-server2' , credentialsId: 'jenkins3') {
                     sh 'mvn sonar:sonar'
                     }        
 
@@ -86,8 +86,6 @@ pipeline {
                     docker login -u admin -p nexus 4.188.224.23:8083
                     docker push 4.188.224.23:8083/app:${VERSION}
                     docker rmi 4.188.224.23:8083/app:${VERSION}
-		    docker container rm -f db
-                    docker container rm -f app
                     '''
                     
                     }
@@ -99,28 +97,54 @@ pipeline {
 
         }
 
-        stage("Run application using docker compose"){
+        stage("Pull image"){
             steps{
     
                 script{
                     
                     withCredentials([string(credentialsId: 'nexus', variable: 'nexus-cred')]) {
                     
-                    sh "docker-compose -f docker-compose.yaml build"
-                    sh "docker-compose -f docker-compose.yaml up -d"
-                    
+                    sh '''
+                    docker pull 4.188.224.23:8083/app:${VERSION}  
+                    '''
                     }
+                    def image = docker.image('mongo:latest')
+                    image.pull()
                                         
-
                 }
 
             }
         }
+
+         stage("Run image on remote server"){
+            steps{
+    
+                script {
+
+                    withCredentials([string(credentialsId: 'nexus', variable: 'nexus-cred')]) {
+                    
+                        
+
+                    withCredentials([sshUserPrivateKey(credentialsId: 'deploy', keyFileVariable: 'key', usernameVariable: 'deploy')]) {
+                    def remote = [:]
+                    remote.user = 'deploy'
+                    remote.host = '20.232.209.34'
+                    remote.name = 'deploy'
+                    remote.password = 'deploy@12345678'
+                    remote.allowAnyHosts = 'true'
+                    sshCommand remote: remote, command: 'docker container rm -f db', tty: true
+                    sshCommand remote: remote, command: 'docker container rm -f app', tty: true
+                    sshCommand remote: remote, command: 'sudo docker login -u admin -p nexus 4.188.224.23:8083', tty: true
+                    sshCommand remote: remote, command: 'sudo docker pull 4.188.224.23:8083/app:${VERSION}', tty: true
+                    sshCommand remote: remote, command: 'sudo docker pull mongo:latest', tty: true
+                    sshCommand remote: remote, command: 'sudo docker run -d --name db -p 27017:27017 mongo:latest', tty: true
+                    sshCommand remote: remote, command: 'sudo docker run -d --name app -p 8085:8085 --link db:mongo 4.188.224.23:8083/app:${VERSION}', tty: true
+                    }
+                }
+
+                }
+            }
+        }
     }
-        //post {
-		//    always {
-		//	    mail bcc: '', body: "<br>Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br> URL de build: ${env.BUILD_URL}", cc: '', charset: 'UTF-8', from: '', mimeType: 'text/html', replyTo: '', subject: "${currentBuild.result} CI: Project name -> ${env.JOB_NAME}", to: "devops473@gmail.com";  
-		//    }
-	    //}
 
 }
