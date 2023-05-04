@@ -38,7 +38,7 @@ pipeline {
 
               script{
 
-                    withSonarQubeEnv(installationName: 'sonar-server2' , credentialsId: 'jenkins2') {
+                    withSonarQubeEnv(installationName: 'sonar-server2' , credentialsId: 'jenkins3') {
                     sh 'mvn sonar:sonar'
                     }        
 
@@ -114,19 +114,34 @@ pipeline {
                     remote.name = 'deploy'
                     remote.password = 'deploy@12345678'
                     remote.allowAnyHosts = 'true'
-                    //sshCommand remote: remote, command: 'docker container rm -f db', tty: true
-                    //sshCommand remote: remote, command: 'docker container rm -f app', tty: true
-                    sshCommand remote: remote, command: 'sudo docker login -u admin -p nexus 4.188.224.23:8083', tty: true
+                    sshCommand remote: remote, command: "docker container rm -f db", tty: true
+                    sshCommand remote: remote, command: "docker container rm -f app", tty: true
+                    sshCommand remote: remote, command: "sudo docker login -u admin -p nexus 4.188.224.23:8083", tty: true
                     sshCommand remote: remote, command: "sudo docker pull 4.188.224.23:8083/app:${VERSION}", tty: true
-                    sshCommand remote: remote, command: 'sudo docker pull mongo:latest', tty: true
-                    sshCommand remote: remote, command: 'sudo docker run -d --name db -p 27017:27017 mongo:latest', tty: true
-                    sshCommand remote: remote, command: "sudo docker run -d --name app -p 8080:8080 --link db:mongo 4.188.224.23:8083/app:${VERSION}", tty: true
+                    sshCommand remote: remote, command: "sudo docker pull mongo:latest", tty: true
+                    sshCommand remote: remote, command: "sudo docker run -d --name db -p 27017:27017 mongo:latest", tty: true
+                    sshCommand remote: remote, command: "sudo docker run -d --name app -p 8085:8085 --link db:mongo 4.188.224.23:8083/app:${VERSION}", tty: true
                     }
                 }
 
                 }
             }
         }
-    }
 
+        stage('Approval Gateway') {
+            steps {
+                // prompt user for approval
+                input "Please approve the deployment"
+            }
+
+            post {
+                always {
+                    // send email notification
+                    emailext body: 'The deployment has been approved and will now proceed',
+                             subject: 'Deployment Approved',
+                             to: 'devops473@gmail.com'
+                }
+            }
+        }
+    }
 }
