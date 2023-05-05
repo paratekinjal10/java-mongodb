@@ -144,30 +144,30 @@ pipeline {
         //    }
         //}
 
-        stage('Send Approval Email') {
-            steps {
-                script {
-                    def approvalBody = """
-                        Please approve this deployment request.
-                        Click the following link to approve or reject:
+        //stage('Send Approval Email') {
+            //steps {
+                //script {
+                    //def approvalBody = """
+                       // Please approve this deployment request.
+                       // Click the following link to approve or reject:
                         
-                        ${Jenkins.getInstance().getRootUrl()}${env.JOB_URL}input/approval?email=true
-                    """
+                      //  ${Jenkins.getInstance().getRootUrl()}${env.JOB_URL}input/approval?email=true
+                    //"""
                     
-                    emailext (
-                        to: 'devops473@gmail.com',
-                        subject: 'Deployment Approval',
-                        body: approvalBody,
-                        recipientProviders: [[$class: 'DevelopersRecipientProvider']]
-                    )
-                }
-            }
-        }
+                    //emailext (
+                   //     to: 'devops473@gmail.com',
+                  //      subject: 'Deployment Approval',
+                 //       body: approvalBody,
+                //        recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+              //      )
+            //    }
+          //  }
+        //}
         
-        stage('Wait for Approval') {
-            steps {
-                input 'Deployment Approval'
-            }
-        }
+        //stage('Wait for Approval') {
+        //    steps {
+        //        input 'Deployment Approval'
+        //    }
+        //}
     }
 }
