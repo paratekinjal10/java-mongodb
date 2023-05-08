@@ -128,46 +128,40 @@ pipeline {
             }
         }
 
-        //stage('Approval Gateway') {
-        //    steps {
-        //        // prompt user for approval
-        //        input "Please approve the deployment"
-        //    }
-        //
-        //    post {
-        //        always {
-        //            // send email notification
-        //            emailext body: 'The deployment has been approved and will now proceed',
-        //                     subject: 'Deployment Approved',
-        //                     to: 'devops473@gmail.com'
-        //        }
-        //    }
-        //}
-
-        //stage('Send Approval Email') {
-            //steps {
-                //script {
-                    //def approvalBody = """
-                       // Please approve this deployment request.
-                       // Click the following link to approve or reject:
-                        
-                      //  ${Jenkins.getInstance().getRootUrl()}${env.JOB_URL}input/approval?email=true
-                    //"""
+        stage('Approval Gateway') {
+            steps {
+                // Step 1: Create a deployment request and send it to the manager
+                script {
+                    def managerEmail = 'devops473@gmail.com'
+                    def subject = 'Deployment Request'
+                    def body = "Please approve the deployment request at this <a href='${env.JOB_URL}'> link</a>"
                     
-                    //emailext (
-                   //     to: 'devops473@gmail.com',
-                  //      subject: 'Deployment Approval',
-                 //       body: approvalBody,
-                //        recipientProviders: [[$class: 'DevelopersRecipientProvider']]
-              //      )
-            //    }
-          //  }
-        //}
-        
-        //stage('Wait for Approval') {
-        //    steps {
-        //        input 'Deployment Approval'
-        //    }
-        //}
+                    // Send an email to the manager with a link to the deployment request form using the email-ext plugin
+                    emailext (
+                        subject: subject,
+                        body: body,
+                        to: managerEmail,
+                        attachLog: true,
+                        mimeType: 'text/html',
+                        replyTo: 'noreply@example.com',
+                        from: 'jenkins@example.com',
+                        smtpServer: 'smtp.example.com',
+                        smtpPort: '465',
+                        smtpAuth: 'true',
+                        smtpUsername: 'devops473@gmail.com',
+                        smtpPassword: 'opsdev@473'
+                    )
+                }
+                
+                // Step 2: Wait for the manager to approve the request
+                timeout(time: 30, unit: 'MINUTES') {
+                    // Wait for the manager to approve the deployment request by replying to the email
+                    input message: 'Do you want to approve the deployment request?', ok: 'Approve', submitter: 'devops473@gmail.com'
+                }
+                
+                // Step 3: Deploy the code if the request is approved
+                sh 'echo "Approving Deployment"'
+            }
+        }
     }
 }
