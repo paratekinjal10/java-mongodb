@@ -64,7 +64,7 @@ pipeline {
 
         }
 
-        stage("Build docker image"){
+        stage("Push docker image"){
     
            steps{
     
