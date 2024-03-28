@@ -14,11 +14,11 @@ pipeline {
 
     // }
 
-    // environment{
+    environment{
     
-    //     VERSION = "${env.BUILD_ID}"
+        VERSION = "${env.BUILD_ID}"
 
-    // }
+    }
 
     stages {
         
@@ -76,19 +76,22 @@ pipeline {
         //     }
         // }
 
-        // stage("Build docker image"){
+        stage("Build docker image"){
     
-        //    steps{
+           steps{
     
-        //        script {
-        //            dockerImage = docker.build registry + ":$BUILD_NUMBER"
-        //        }
+               script {
+                       sh "docker build -t 4.188.224.23:8083/app:${VERSION} ."
+                       sh "docker tag  4.188.224.23:8083/app:${VERSION} demokinjal/task1-java:${VERSION}"
+                       sh "docker push  demokinjal/task1-java:${VERSION}"
+                    
+               }
 
-        //    }
+           }
 
-        //}
+        }
 
-        // stage("Push docker image to Nexus repo"){
+        // stage("Build & Push Image"){
     
         //     steps{
     
