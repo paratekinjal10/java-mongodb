@@ -17,6 +17,8 @@ pipeline {
     environment{
     
         VERSION = "${env.BUILD_ID}"
+        USER = "demokinjal"
+        PASSWORD = "kinjal@parate2000"
 
     }
 
@@ -83,6 +85,19 @@ pipeline {
                script {
                        sh "docker build -t image:${VERSION} ."
                        sh "docker tag image:${VERSION} demokinjal/task1-java:${VERSION}"
+                    
+               }
+
+           }
+
+        }
+
+        stage("Build docker image"){
+    
+           steps{
+    
+               script {
+                       sh "docker login -u $USER -p $PASSWORD"
                        sh "docker push demokinjal/task1-java:${VERSION}"
                     
                }
