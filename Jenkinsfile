@@ -81,9 +81,9 @@ pipeline {
            steps{
     
                script {
-                       sh "docker build -t 4.188.224.23:8083/app:${VERSION} ."
-                       sh "docker tag  4.188.224.23:8083/app:${VERSION} demokinjal/task1-java:${VERSION}"
-                       sh "docker push  demokinjal/task1-java:${VERSION}"
+                       sh "docker build -t image:${VERSION} ."
+                       sh "docker tag image:${VERSION} demokinjal/task1-java:${VERSION}"
+                       sh "docker push demokinjal/task1-java:${VERSION}"
                     
                }
 
