@@ -39,14 +39,14 @@ pipeline {
                 
             }
         }
-        // stage ('Build') {
+        stage ('Build') {
 
-        //     steps {
+            steps {
                 
-        //         sh 'mvn clean package'
+                sh 'mvn clean package'
                 
-        //     }
-        // }
+            }
+        }
 
         // stage("Sonar quality check") {
 
