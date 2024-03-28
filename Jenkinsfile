@@ -2,9 +2,9 @@ pipeline {
     
     agent any
     
-    tools{
-        maven 'maven-3.9.1'
-    }
+    // tools{
+    //     maven 'maven-3.9.1'
+    // }
     
     // environment{
     
@@ -14,11 +14,11 @@ pipeline {
 
     // }
 
-    environment{
+    // environment{
     
-        VERSION = "${env.BUILD_ID}"
+    //     VERSION = "${env.BUILD_ID}"
 
-    }
+    // }
 
     stages {
         
