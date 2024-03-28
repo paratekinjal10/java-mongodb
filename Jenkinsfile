@@ -26,7 +26,7 @@ pipeline {
 
             steps {
                 
-                sh 'mvn clean package'
+                git branch: 'java-new', url: 'https://github.com/paratekinjal10/java-mongodb.git'
                 
             }
         }
