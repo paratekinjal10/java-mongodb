@@ -8,7 +8,7 @@ pipeline {
     
     // environment{
     
-    //     registry = 'demokinjal/trial'
+    //     registry = 'demokinjal/task1-java'
     //     registryCredential = 'demokinjal'
     //     dockerImage = ''
 
