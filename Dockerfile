@@ -1,4 +1,4 @@
-FROM maven as build
+FROM maven:3.6.3-openjdk-17 AS build
 WORKDIR /app
 COPY . .
 RUN mvn install
