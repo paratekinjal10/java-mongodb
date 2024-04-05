@@ -89,7 +89,7 @@ pipeline {
             
                 script {
                     // Read the Kubernetes manifest template
-                    def template = readFile('k8-aks-template.yaml')
+                    def template = readFile('/var/lib/jenkins/workspace/task1/k8-aks-template.yaml')
                     
                     // Substitute the VERSION variable in the template
                     def substitutedTemplate = template.replaceAll('\\$\\{VERSION\\}', VERSION)
