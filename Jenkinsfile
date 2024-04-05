@@ -89,13 +89,13 @@ pipeline {
             
                 script {
                     // Read the Kubernetes manifest template
-                    def template = readFile('/var/lib/jenkins/workspace/task1/k8-aks-template.yaml')
+                    // def template = readFile('/var/lib/jenkins/workspace/task1/k8-aks-template.yaml')
                     
                     // Substitute the VERSION variable in the template
-                    def substitutedTemplate = template.replaceAll('\\$\\{VERSION\\}', VERSION)
+                    // def substitutedTemplate = template.replaceAll('\\$\\{VERSION\\}', VERSION)
                     
                     // Write the substituted manifest to a temporary file
-                    writeFile file: 'k8-aks.yaml', text: substitutedTemplate
+                    // writeFile file: 'k8-aks.yaml', text: substitutedTemplate
                     
                     // Apply the modified Kubernetes manifest
                     withKubeConfig(credentialsId: 'K8') {
