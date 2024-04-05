@@ -82,12 +82,26 @@ pipeline {
     
            steps{
     
-               withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'K8', namespace: '', restrictKubeConfigAccess: false, serverUrl: '') {
-                    sh ('kubectl apply -f k8-aks.yaml')
+           //     withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'K8', namespace: '', restrictKubeConfigAccess: false, serverUrl: '') {
+           //          sh ('kubectl apply -f k8-aks.yaml')
+           //          }
+
+            
+                script {
+                    // Read the Kubernetes manifest template
+                    def template = readFile('k8-aks-template.yaml')
+                    
+                    // Substitute the VERSION variable in the template
+                    def substitutedTemplate = template.replaceAll('\\$\\{VERSION\\}', VERSION)
+                    
+                    // Write the substituted manifest to a temporary file
+                    writeFile file: 'k8-aks.yaml', text: substitutedTemplate
+                    
+                    // Apply the modified Kubernetes manifest
+                    withKubeConfig(credentialsId: 'K8') {
+                        sh 'kubectl apply -f k8-aks.yaml'
                     }
-
-           }
-
+                }
         }
 
     }
