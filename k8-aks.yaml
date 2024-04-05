@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: image
-        image: demokinjal/task1-java:${VERSION}
+        image: demokinjal/task1-java:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 9090
