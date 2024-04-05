@@ -78,5 +78,17 @@ pipeline {
 
         }
 
+        stage("K8 deploy"){
+    
+           steps{
+    
+               withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'K8', namespace: '', restrictKubeConfigAccess: false, serverUrl: '') {
+                    sh ('kubectl apply -f k8-aks.yaml')
+                    }
+
+           }
+
+        }
+
     }
 }
